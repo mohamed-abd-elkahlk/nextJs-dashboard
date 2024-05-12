@@ -7,6 +7,7 @@ import {
   LatestInvoiceRaw,
   User,
   Revenue,
+  FormattedCustomersTable,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -170,6 +171,23 @@ export async function fetchInvoiceById(id: string) {
   }
 }
 
+export async function fetchFormattedCustomersTable() {
+  noStore();
+
+  try {
+    const data = await sql<FormattedCustomersTable>`
+      SELECT *
+      FROM customers
+      ORDER BY name ASC
+    `;
+
+    const customers = data.rows;
+    return customers;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all customers.');
+  }
+}
 export async function fetchCustomers() {
   noStore();
 
